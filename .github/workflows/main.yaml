@@ -27,6 +27,11 @@ jobs:
             #- name: gcloud login with credentials 
             #  run: gcloud auth login --cred-file=${{ steps.auth.outputs.credentials_file_path }}
             
+            - name: fresh
+              run: gcloud auth application-default revoke
+            - name: reload  
+              run: gcloud auth application-default login --quiet
+
             - name: Setup Terraform
               uses: hashicorp/setup-terraform@v3
               with: 
