@@ -5,7 +5,7 @@ on: workflow_dispatch
 jobs:
     gcloud-gitops-access:
         name: "access gcloud for gitops workflows"
-        runs-on: ububtu-lastest
+        runs-on: ubuntu-latest
         permissions:
             id-token: 'write'
             contents: 'read'
