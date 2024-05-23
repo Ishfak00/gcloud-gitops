@@ -24,12 +24,12 @@ jobs:
               with:
                 workload_identity_provider:  projects/671969297159/locations/global/workloadIdentityPools/github-pool/providers/githubwif
                 service_account: github-iam-wif@primal-gear-411416.iam.gserviceaccount.com
-                token_format: "access_token"
-                create_credentials_file: true
-                activate_credentials_file: true
+              #  token_format: "access_token"
+               # create_credentials_file: true
+                #activate_credentials_file: true
 
-            - name: gcloud login with credentials 
-              run: printf 'y' | gcloud auth login --cred-file=${{ steps.auth.outputs.credentials_file_path }} 
+           # - name: gcloud login with credentials 
+            #  run:  gcloud auth login --cred-file=${{ steps.auth.outputs.credentials_file_path }} 
         
       
 
