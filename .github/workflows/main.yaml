@@ -21,7 +21,7 @@ jobs:
                 workload_identity_provider:  projects/671969297159/locations/global/workloadIdentityPools/github-pool/providers/githubwif
                 service_account: github-iam-wif@primal-gear-411416.iam.gserviceaccount.com
             
-            - id: gcloud info
+            - id: gcloud_status
               name: Show gcloud information
               run: gcloud info
 
