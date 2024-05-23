@@ -21,9 +21,57 @@ jobs:
                 workload_identity_provider:  projects/671969297159/locations/global/workloadIdentityPools/github-pool/providers/githubwif
                 service_account: github-iam-wif@primal-gear-411416.iam.gserviceaccount.com
             
-            - id: gcloud_status
-              name: Show gcloud information
-              run: gcloud info
+            
+            - name: Setup Terraform
+              uses: hashicorp/setup-terraform@v3
+              with: 
+                terraform_version: "1.8.1"
+
+            - name: Terraform Init
+              id: init
+              run: terraform init 
+            
+            - name: Terraform format
+              id: fmt
+              run: terraform fmt -check
+              continue-on-error: true
+
+            - name: Terraform validate
+              id: validate
+              run: terraform validate -no-color
+
+            - name: Terraform Plan
+              id: plan
+              run: terraform plan -no-color -input=false -out tfplanfile
+              continue-on-error: true
+
+            - name: Terraform Plan Status
+              if: steps.plan.outcome == 'faliure'
+              run: exit 1
+ 
+            - name: Terraform Apply
+              id: apply
+              if: github.ref == 'refs/heads/main'
+              run: terraform apply -auto-approve -input=false 
+
+              
+            - name: Get Kubernetes Cluster Name
+              id: get_cluster_name
+              run: echo "::set-output name=cluster_name::$(terraform output -raw kubernetes_cluster_name)"
+
+            - name: Get Kubernetes Zone Name
+              id: get_zone_name
+              run: echo "::set-output name=zone_name::$(terraform output -raw zone)"
 
               
 
+            - id: 'get-credentials'
+              name: Get GKE Credentials
+              uses: 'google-github-actions/get-gke-credentials@v2'
+              with:
+                cluster_name:  '${{ steps.get_cluster_name.outputs.cluster_name }}'
+                location: '${{ steps.get_zone_name.outputs.zone_name }}'
+        
+            # The KUBECONFIG env var is automatically exported and picked up by kubectl.
+            - id: 'get-pods'
+              run: 'kubectl get nodes'
