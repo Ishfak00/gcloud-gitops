@@ -1,0 +1,29 @@
+name: "gcloud gitops workflows"
+on: workflow_dispatch
+
+
+jobs:
+    gcloud-gitops-access:
+        name: "access gcloud for gitops workflows"
+        runs-on: ububtu-lastest
+        permissions:
+            id-token: 'write'
+            contents: 'read'
+        
+        steps:
+            - name: Check out repository code
+              uses: 'actions/checkout@v4'
+            
+            - id: Auth
+              name: Authenticate gcloud with WIF
+              uses: 'google-github-actions/auth@v2'
+              with:
+                workload_identity_provider:  projects/671969297159/locations/global/workloadIdentityPools/github-pool/providers/githubwif
+                service_account: github-iam-wif@primal-gear-411416.iam.gserviceaccount.com
+            
+            - id: gcloud info
+              name: Show gcloud information
+              run: gcloud info
+
+              
+
