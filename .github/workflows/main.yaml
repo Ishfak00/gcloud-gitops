@@ -29,7 +29,7 @@ jobs:
                 activate_credentials_file: true
 
             - name: gcloud login with credentials 
-              run: gcloud auth login --cred-file=${{ steps.auth.outputs.credentials_file_path }} -y
+              run: printf 'y' | gcloud auth login --cred-file=${{ steps.auth.outputs.credentials_file_path }} 
         
       
 
