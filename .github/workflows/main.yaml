@@ -74,4 +74,5 @@ jobs:
         
             # The KUBECONFIG env var is automatically exported and picked up by kubectl.
             - id: 'get-pods'
+              name: View Cluster Nodes 
               run: 'kubectl get nodes'
