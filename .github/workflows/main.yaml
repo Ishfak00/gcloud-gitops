@@ -13,10 +13,7 @@ jobs:
         steps:
             - name: Check out repository code
               uses: 'actions/checkout@v4'
-            
-
-            - name: fresh
-              run: gcloud auth application-default revoke
+             
               
             - id: auth
               name: Authenticate gcloud with WIF
@@ -68,11 +65,11 @@ jobs:
               
             - name: Get Kubernetes Cluster Name
               id: get_cluster_name
-              run: echo "::set-output name=cluster_name::$(terraform output -raw kubernetes_cluster_name)"
+              run: echo "CLUSTER_NAME=$(terraform output -raw kubernetes_cluster_name)" >> "$GITHUB_OUTPUT"
 
             - name: Get Kubernetes Zone Name
               id: get_zone_name
-              run: echo "::set-output name=zone_name::$(terraform output -raw zone)"
+              run: echo "ZONE_NAME=$(terraform output -raw zone)" >> "$GITHUB_OUTPUT"
 
               
 
@@ -80,10 +77,10 @@ jobs:
               name: Get GKE Credentials
               uses: 'google-github-actions/get-gke-credentials@v2'
               with:
-                cluster_name:  '${{ steps.get_cluster_name.outputs.cluster_name }}'
-                location: '${{ steps.get_zone_name.outputs.zone_name }}'
+                cluster_name:  '${{ steps.get_cluster_name.outputs.CLUSTER_NAME }}'
+                location: '${{ steps.get_zone_name.outputs.ZONE_NAME }}'
         
             # The KUBECONFIG env var is automatically exported and picked up by kubectl.
             - id: 'get-pods'
               name: View Cluster Nodes 
-              run: 'kubectl get nodes'
+              run: 'kubectl get nodes -o wide'
